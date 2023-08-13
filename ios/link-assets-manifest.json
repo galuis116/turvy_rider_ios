@@ -1,0 +1,97 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Metropolis-Black.ttf",
+      "sha1": "10906b45ccf43cfad3a72d8c351b3c574d4c615b"
+    },
+    {
+      "path": "assets/fonts/Metropolis-BlackItalic.ttf",
+      "sha1": "294dc910eeecfd2dbd03f58c537739c9cb921b45"
+    },
+    {
+      "path": "assets/fonts/Metropolis-Bold.ttf",
+      "sha1": "f086af17eb368b0872471d2da38faf2a88154bc2"
+    },
+    {
+      "path": "assets/fonts/Metropolis-BoldItalic.ttf",
+      "sha1": "42b9aa65d1a825bb4d05d4e6c82590285082fa7c"
+    },
+    {
+      "path": "assets/fonts/Metropolis-ExtraBold.ttf",
+      "sha1": "6d407b40160ec10e3e1ce4931165781c40112221"
+    },
+    {
+      "path": "assets/fonts/Metropolis-ExtraBoldItalic.ttf",
+      "sha1": "da31987250b389300bb9e2da742d3a0d5dc1581f"
+    },
+    {
+      "path": "assets/fonts/Metropolis-ExtraLight.ttf",
+      "sha1": "73097e20a135ca0da24e41c44ab91f59e36c3181"
+    },
+    {
+      "path": "assets/fonts/Metropolis-ExtraLightItalic.ttf",
+      "sha1": "59d80b88cf3552e736acc25d33af8dfbe520ebf2"
+    },
+    {
+      "path": "assets/fonts/Metropolis-Light.ttf",
+      "sha1": "1cc970afc7472393384f800bb4fb19fecfbb9853"
+    },
+    {
+      "path": "assets/fonts/Metropolis-LightItalic.ttf",
+      "sha1": "ef0e78193bb0e8e22f82839b77537c3371295fd6"
+    },
+    {
+      "path": "assets/fonts/Metropolis-Medium.ttf",
+      "sha1": "691fd8b681d65baab2238028aa74253487272860"
+    },
+    {
+      "path": "assets/fonts/Metropolis-MediumItalic.ttf",
+      "sha1": "19b9c9e6e9319afa84a2d8ca5c75d0879a0ecdde"
+    },
+    {
+      "path": "assets/fonts/Metropolis-Regular.ttf",
+      "sha1": "1e7d093a9fa8629b1823bdf5b32c90ff3bac8641"
+    },
+    {
+      "path": "assets/fonts/Metropolis-RegularItalic.ttf",
+      "sha1": "fbc6b517138f2a48d54593e9b8e239329d30c83e"
+    },
+    {
+      "path": "assets/fonts/Metropolis-SemiBold.ttf",
+      "sha1": "1749049315e48626d2fcad7335c6cce2050359b3"
+    },
+    {
+      "path": "assets/fonts/Metropolis-SemiBoldItalic.ttf",
+      "sha1": "35010a9667ee9b7e5a586b72f6adba15a983df12"
+    },
+    {
+      "path": "assets/fonts/Metropolis-Thin.ttf",
+      "sha1": "b90aa6b24f582976b4cc7f6e73f955bce3048c23"
+    },
+    {
+      "path": "assets/fonts/Metropolis-ThinItalic.ttf",
+      "sha1": "5d3b27aac738b4d5f9aa4e0b7a242f6a5da14715"
+    },
+    {
+      "path": "assets/fonts/UBERMOVE-BOLD.OTF",
+      "sha1": "2b9970166aa9d2e6c2e8bd533f92a135956683a9"
+    },
+    {
+      "path": "assets/fonts/UBERMOVETEXT-BOLD.OTF",
+      "sha1": "a61e10185a33afb250702a97c448e086f7269235"
+    },
+    {
+      "path": "assets/fonts/UBERMOVETEXT-LIGHT.OTF",
+      "sha1": "5eaf1ec18d8cefb2a77dc17651e1b1332fcef2e4"
+    },
+    {
+      "path": "assets/fonts/UBERMOVETEXT-REGULAR.OTF",
+      "sha1": "3d3616c87b7f1b70221dee317c792c5cc630f587"
+    },
+    {
+      "path": "assets/fonts/ubermovetext-medium.ttf",
+      "sha1": "be854526f0e8adb4e3e4c04cfe86757c354c2f1b"
+    }
+  ]
+}

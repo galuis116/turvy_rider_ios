@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>645200450479-chtskb6lvgacgjmhu610bpi0pncpar82.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.645200450479-chtskb6lvgacgjmhu610bpi0pncpar82</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>645200450479-2su0bqrhmluk50ocsofnlgoirhpu5j3b.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCIcDz1LF6ypSw2YSq6-1qErZMB-MdFPC4</string>
+	<key>GCM_SENDER_ID</key>
+	<string>645200450479</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.turvy.rider</string>
+	<key>PROJECT_ID</key>
+	<string>turvy-1501496198977</string>
+	<key>STORAGE_BUCKET</key>
+	<string>turvy-1501496198977.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:645200450479:ios:f8cee3452644a19fd9155a</string>
+	<key>DATABASE_URL</key>
+	<string>https://turvy-1501496198977.firebaseio.com</string>
+</dict>
+</plist>
