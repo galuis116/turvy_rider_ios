@@ -53,7 +53,7 @@ export default class RiderRating extends React.Component {
       accessTokan: "",
       driverId: "",
       showBottomSheet: 1,
-      screenHeight: ["85%", "40%", "0%"],
+      screenHeight: ["100%", "85%", "65%", "45%", "0%"],
       rateError: "",
       rateSuccess: "",
       feedbackText: "",
@@ -78,7 +78,7 @@ export default class RiderRating extends React.Component {
   }
 
   UNSAFE_componentWillUnmount() {
-    this.keyboardDidHideListener.remove();
+    // this.keyboardDidHideListener.remove();
   }
 
   async componentDidMount() {
@@ -119,14 +119,14 @@ export default class RiderRating extends React.Component {
       end_time: this.props.route.params.end_time,
     });
 
-    this.keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      () => {
-        if (this.myRefbt.current) {
-          this.myRefbt.current.snapTo(0);
-        }
-      }
-    );
+    // this.keyboardDidHideListener = Keyboard.addListener(
+    //   "keyboardDidHide",
+    //   () => {
+    //     if (this.myRefbt.current) {
+    //       this.myRefbt.current.snapTo(2);
+    //     }
+    //   }
+    // );
 
     await AsyncStorage.getItem("accesstoken").then((value) => {
       if (value != "" && value !== null) {
@@ -143,6 +143,7 @@ export default class RiderRating extends React.Component {
   ratingCompleted = (rating) => {
     console.log(rating);
     //	inprocessing:1,
+    if (rating == 5) this.myRefbt.current.snapTo(2);
     this.setState({
       riderRating: rating,
     });
@@ -240,7 +241,7 @@ export default class RiderRating extends React.Component {
         return response.json();
       })
       .then((result) => {
-        this.myRefbt.current.snapTo(1);
+        // this.myRefbt.current.snapTo(2);
         if (result.status === 1) {
           //this.setState({screenHeight:height/3})
           this.setState({ rateSuccess: result.message });
@@ -534,12 +535,12 @@ export default class RiderRating extends React.Component {
                 </Col>
               </Row>
             </Row>
-            <Divider style={{ marginBottom: 5, marginTop: 25 }} />
+            <Divider style={{ marginBottom: 5, marginTop: 5 }} />
             <Row>
               <Col size={12}>
                 <Row
                   style={{
-                    height: 250,
+                    height: 200,
                     display: "flex",
                     alignContent: "center",
                     justifyContent: "center",
@@ -590,11 +591,12 @@ export default class RiderRating extends React.Component {
                             blurOnSubmit={false}
                             returnKeyType={"go"}
                             style={styles.textInput}
+                            value={this.state.active}
                             onFocus={(e) => {
-                              //   this.myRefbt.current.snapTo(0);
+                              this.myRefbt.current.snapTo(0);
                             }}
                             onBlur={(e) => {
-                              //   this.myRefbt.current.snapTo(0);
+                              this.myRefbt.current.snapTo(2);
                             }}
                             multiline={true}
                             scrollEnabled={true}
@@ -649,7 +651,10 @@ export default class RiderRating extends React.Component {
                   name="arrow-back"
                   size={24}
                   color="black"
-                  onPress={() => this.setState({ inprocessing: 0 })}
+                  onPress={() => {
+                    this.setState({ inprocessing: 0 });
+                    this.myRefbt.current.snapTo(2);
+                  }}
                 />
               </Col>
               <Col>
@@ -699,12 +704,13 @@ export default class RiderRating extends React.Component {
                   placeholder="Say something about  services?"
                   blurOnSubmit={false}
                   returnKeyType={"go"}
+                  value={this.state.feedbackText}
                   style={styles.textInput}
                   onFocus={(e) => {
                     this.myRefbt.current.snapTo(0);
                   }}
                   onBlur={(e) => {
-                    this.myRefbt.current.snapTo(0);
+                    // this.myRefbt.current.snapTo(2);
                   }}
                   multiline={true}
                   scrollEnabled={true}
@@ -792,6 +798,12 @@ export default class RiderRating extends React.Component {
                     >
                       <View style={{ width: 120, marginHorizontal: 10 }}>
                         <Input
+                          onFocus={(e) => {
+                            this.myRefbt.current.snapTo(0);
+                          }}
+                          onBlur={(e) => {
+                            // this.myRefbt.current.snapTo(2);
+                          }}
                           placeholder="Add Amount"
                           inputStyle={styles.custInput}
                           keyboardType="number-pad"
@@ -886,6 +898,7 @@ export default class RiderRating extends React.Component {
           justifyContent: "center",
           marginTop: 20,
           alignItems: "center",
+          zIndex: 20000,
         },
       });
       return;
@@ -893,6 +906,7 @@ export default class RiderRating extends React.Component {
     this.setState({
       inprocessing: 1,
     });
+    this.myRefbt.current.snapTo(2);
   };
 
   render() {
@@ -901,11 +915,12 @@ export default class RiderRating extends React.Component {
         <FlashMessage
           ref="fmemptywhatwrong"
           position={{ top: 90, left: 10, right: 10 }}
-          style={{ borderRadius: 2, zIndex: 2000 }}
+          style={{ position: "absolute", borderRadius: 2, zIndex: 30000 }}
         />
         {this.state.showBottomSheet ? (
           <BottomSheet
             snapPoints={this.state.screenHeight}
+            initialSnap="2"
             borderRadius={20}
             ref={this.myRefbt}
             renderContent={
