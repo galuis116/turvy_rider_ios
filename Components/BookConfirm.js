@@ -47,6 +47,7 @@ import * as geofirestore from "geofirestore";
 import apiKeys from "../config/keys";
 import TopBar from "./TopBar";
 import { debug } from "./Constant";
+import { PrimaryColor } from "../Riders/Constant";
 
 if (!firebase.apps.length) {
   //console.log('Connected with Firebase');
@@ -762,7 +763,20 @@ export default class BookConfirm extends React.PureComponent {
               size={15}
               style={{ justifyContent: "center", alignItems: "center" }}
             >
-              <Col size={9}>
+              <Col size={1} style={{ alignItems: "center" }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate("BookMain");
+                  }}
+                >
+                  <MaterialIcons
+                    name="arrow-back"
+                    size={30}
+                    color={PrimaryColor}
+                  ></MaterialIcons>
+                </TouchableOpacity>
+              </Col>
+              <Col size={8} style={{ paddingHorizontal: 5 }}>
                 <Button
                   mode="contained"
                   color={"#135AA8"}

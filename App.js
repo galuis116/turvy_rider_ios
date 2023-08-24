@@ -23,6 +23,7 @@ import SideBar from "./Components/SideBar";
 import MyRidesTab from "./Components/MyRidesTab";
 import MyReceipts from "./Components/MyReceipts";
 import MyMessages from "./Components/MyMessages";
+import SaveAddress from "./Components/SaveAddress";
 
 import MyPayments from "./Components/MyPayments";
 import MyTransaction from "./Components/MyTransaction";
@@ -84,6 +85,13 @@ function stackNavigation(props) {
   return (
     <>
       <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen
+          name="SaveAddress"
+          component={SaveAddress}
+          options={{ title: "Choose a address", headerShown: false }}
+          route={props.route}
+          {...props}
+        />
         <Stack.Screen
           name="Login"
           component={Login}

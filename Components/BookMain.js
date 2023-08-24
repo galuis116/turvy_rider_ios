@@ -152,7 +152,7 @@ export default class BookMain extends React.Component {
       stateText: "",
       results: {},
       forsourdest: "source",
-      snaptoval: ["60%", "40%"],
+      snaptoval: ["67%", "40%"],
       snaptovalRiderSelect: ["70%"],
       spinneron: false,
       initialSnap: -1,
@@ -168,6 +168,9 @@ export default class BookMain extends React.Component {
       addressList: {},
       MapboxStyleURL: MapboxCustomURL,
       closebtnsheet: true,
+      selectedSavedAddress: props.route.params?.selectedSavedAddress
+        ? props.route.params?.selectedSavedAddress
+        : null,
     };
     this.myRefbt = React.createRef();
     this.riderSelectRef = React.createRef();
@@ -194,7 +197,31 @@ export default class BookMain extends React.Component {
       //
     });
   };
+
+  componentDidUpdate(prevProps) {
+    const prevNewData = prevProps.route.params?.selectedSavedAddress;
+    const newNewData = this.props.route.params?.selectedSavedAddress;
+
+    // Check if newData parameter has changed when navigating back
+    if (prevNewData !== newNewData) {
+      this.setState({ selectedSavedAddress: newNewData }, () => {
+        // if (this.state.forsourdest == "dest") {
+        //   this.dropoffTextInput.focus();
+        //   this.myRefbt.current.snapTo(0);
+        // } else {
+        //   this.pickupTextInput.focus();
+        //   this.myRefbt.current.snapTo(0);
+        // }
+      });
+    }
+  }
+
   async componentDidMount() {
+    const selectedSavedAddress = this.props.route.params?.selectedSavedAddress; // Access newData if it exists
+    console.log("selectedSavedAddress", selectedSavedAddress);
+    if (selectedSavedAddress !== undefined) {
+      this.setState({ selectedSavedAddress });
+    }
     //Pusher.logToConsole = true;
     // const isGranted = await MapboxGL.requestAndroidLocationPermissions();
     // console.log("MapboxGL_isGranted", isGranted);
@@ -1062,7 +1089,7 @@ export default class BookMain extends React.Component {
     );
   };
 
-  addaddress = async (address, destinationlnglat) => {
+  addaddress = async (main_address, address, destinationlnglat) => {
     await AsyncStorage.getItem("accesstoken").then((value) => {
       console.log(value);
       //console.log(this.state.scheduledate);
@@ -1074,6 +1101,7 @@ export default class BookMain extends React.Component {
           "Content-Type": "application/json",
         }),
         body: JSON.stringify({
+          main_address: main_address,
           address: address,
           coordinates: destinationlnglat,
           addresastype: "source-dest",
@@ -1124,6 +1152,7 @@ export default class BookMain extends React.Component {
               },
               () => {
                 this.addaddress(
+                  rowData.structured_formatting.main_text,
                   rowData.structured_formatting.secondary_text,
                   destination
                 );
@@ -1182,6 +1211,7 @@ export default class BookMain extends React.Component {
               },
               () => {
                 this.addaddress(
+                  rowData.structured_formatting.main_text,
                   rowData.structured_formatting.secondary_text,
                   destination
                 );
@@ -1359,6 +1389,121 @@ export default class BookMain extends React.Component {
         height: "100%",
       }}
     >
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          height: 65,
+        }}
+      >
+        {this.state.selectedSavedAddress != null ? (
+          <>
+            <TouchableHighlight
+              underlayColor={"#c8c7cc"}
+              style={{ flex: 1 }}
+              onPress={() => {
+                this._onPress(this.state.selectedSavedAddress);
+              }}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  backgroundColor: "#fff",
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#ccc",
+                  alignItems: "center",
+                }}
+              >
+                <View style={{ padding: 5 }}>
+                  <MaterialCommunityIcons
+                    name="briefcase"
+                    size={24}
+                    color="grey"
+                  />
+                </View>
+                <View style={{ padding: 10 }}>
+                  <View style={{ flex: 1, flexDirection: "row" }}>
+                    <Text numberOfLines={2}>
+                      {" "}
+                      {this.state.selectedSavedAddress.savedname}
+                    </Text>
+                  </View>
+                  <View style={{ flex: 1, flexDirection: "row" }}>
+                    <Text
+                      multiline={true}
+                      numberOfLines={2}
+                      style={{
+                        fontSize: 12,
+                        // width: 280,
+                      }}
+                    >
+                      {" "}
+                      {
+                        this.state.selectedSavedAddress.structured_formatting
+                          .main_text
+                      }
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </TouchableHighlight>
+            <TouchableHighlight
+              underlayColor={"#c8c7cc"}
+              style={{ flex: 1, marginLeft: 5 }}
+              onPress={() => {
+                console.log("-------------------");
+                this.props.navigation.navigate("SaveAddress", this.state);
+              }}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  backgroundColor: "#fff",
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#ccc",
+                  alignItems: "center",
+                }}
+              >
+                <View style={{ padding: 5, marginLeft: 5 }}>
+                  <FontAwesome name="star" size={24} color="grey" />
+                </View>
+                <View style={{ padding: 10 }}>
+                  <Text style={{ fontSize: 16 }}>Saved place...</Text>
+                </View>
+              </View>
+            </TouchableHighlight>
+          </>
+        ) : (
+          <TouchableHighlight
+            underlayColor={"#c8c7cc"}
+            style={{ width: "90%" }}
+            onPress={() => {
+              console.log("-------------------");
+              this.props.navigation.navigate("SaveAddress", this.state);
+            }}
+          >
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                backgroundColor: "#fff",
+                borderBottomWidth: 1,
+                borderBottomColor: "#ccc",
+                alignItems: "center",
+              }}
+            >
+              <View style={{ padding: 5 }}>
+                <FontAwesome name="star" size={24} color="grey" />
+              </View>
+              <View style={{ padding: 10 }}>
+                <Text style={{ fontSize: 16 }}>Saved place...</Text>
+              </View>
+            </View>
+          </TouchableHighlight>
+        )}
+      </View>
       {this._getFlatList()}
     </View>
   );
@@ -2205,7 +2350,127 @@ export default class BookMain extends React.Component {
             index={this.state.initialSnap}
             enablePanDownToClose={this.state.closebtnsheet}
           >
-            <BottomSheetView>{this._getFlatList()}</BottomSheetView>
+            <BottomSheetView>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  height: 65,
+                }}
+              >
+                {this.state.selectedSavedAddress != null ? (
+                  <>
+                    <TouchableHighlight
+                      underlayColor={"#c8c7cc"}
+                      style={{ flex: 1 }}
+                      onPress={() => {
+                        this._onPress(this.state.selectedSavedAddress);
+                      }}
+                    >
+                      <View
+                        style={{
+                          flex: 1,
+                          flexDirection: "row",
+                          backgroundColor: "#fff",
+                          borderBottomWidth: 1,
+                          borderBottomColor: "#ccc",
+                          alignItems: "center",
+                        }}
+                      >
+                        <View style={{ padding: 10 }}>
+                          <MaterialCommunityIcons
+                            name="briefcase"
+                            size={24}
+                            color="grey"
+                          />
+                        </View>
+                        <View style={{ padding: 10 }}>
+                          <View style={{ flex: 1, flexDirection: "row" }}>
+                            <Text numberOfLines={2}>
+                              {" "}
+                              {this.state.selectedSavedAddress.savedname}
+                            </Text>
+                          </View>
+                          <View style={{ flex: 1, flexDirection: "row" }}>
+                            <Text
+                              multiline={true}
+                              numberOfLines={2}
+                              style={{
+                                fontSize: 12,
+                                // width: 280,
+                              }}
+                            >
+                              {" "}
+                              {
+                                this.state.selectedSavedAddress
+                                  .structured_formatting.main_text
+                              }
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight
+                      underlayColor={"#c8c7cc"}
+                      style={{ flex: 1, marginLeft: 5 }}
+                      onPress={() => {
+                        console.log("-------------------");
+                        this.props.navigation.navigate(
+                          "SaveAddress",
+                          this.state
+                        );
+                      }}
+                    >
+                      <View
+                        style={{
+                          flex: 1,
+                          flexDirection: "row",
+                          backgroundColor: "#fff",
+                          borderBottomWidth: 1,
+                          borderBottomColor: "#ccc",
+                          alignItems: "center",
+                        }}
+                      >
+                        <View style={{ padding: 10, marginLeft: 5 }}>
+                          <FontAwesome name="star" size={24} color="grey" />
+                        </View>
+                        <View style={{ padding: 10 }}>
+                          <Text style={{ fontSize: 16 }}>Saved place...</Text>
+                        </View>
+                      </View>
+                    </TouchableHighlight>
+                  </>
+                ) : (
+                  <TouchableHighlight
+                    underlayColor={"#c8c7cc"}
+                    style={{ width: "90%" }}
+                    onPress={() => {
+                      console.log("-------------------");
+                      this.props.navigation.navigate("SaveAddress", this.state);
+                    }}
+                  >
+                    <View
+                      style={{
+                        flex: 1,
+                        flexDirection: "row",
+                        backgroundColor: "#fff",
+                        borderBottomWidth: 1,
+                        borderBottomColor: "#ccc",
+                        alignItems: "center",
+                      }}
+                    >
+                      <View style={{ padding: 10 }}>
+                        <FontAwesome name="star" size={24} color="grey" />
+                      </View>
+                      <View style={{ padding: 10 }}>
+                        <Text style={{ fontSize: 16 }}>Saved place...</Text>
+                      </View>
+                    </View>
+                  </TouchableHighlight>
+                )}
+              </View>
+              {this._getFlatList()}
+            </BottomSheetView>
           </BottomSheet>
           {/* <BottomSheet
             keyboardBehavior="extend"
