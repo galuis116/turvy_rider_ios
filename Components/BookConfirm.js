@@ -571,7 +571,9 @@ export default class BookConfirm extends React.PureComponent {
                       let currentTime = new Date();
                       let time_away = "Longer wait";
                       let time = `${
-                        currentTime.getHours() % 12
+                        currentTime.getHours() > 12
+                          ? currentTime.getHours() % 12
+                          : currentTime.getHours()
                       }:${currentTime.getMinutes()}${
                         currentTime.getHours() > 12 ? "pm" : "am"
                       }`;
@@ -582,7 +584,9 @@ export default class BookConfirm extends React.PureComponent {
                           currentTime.getTime() + item.duration * 60000
                         );
                         time = `${
-                          futureTime.getHours() % 12
+                          futureTime.getHours() > 12
+                            ? futureTime.getHours() % 12
+                            : futureTime.getHours()
                         }:${futureTime.getMinutes()}${
                           futureTime.getHours() > 12 ? "pm" : "am"
                         }`;
@@ -597,6 +601,7 @@ export default class BookConfirm extends React.PureComponent {
                               ? { backgroundColor: "#135AA8" }
                               : { borderColor: this.state.vehborder },
                           ]}
+                          key={index}
                         >
                           <TouchableOpacity
                             onPress={() =>
@@ -930,20 +935,20 @@ export default class BookConfirm extends React.PureComponent {
   async updateServicesType(servicetypes, drivernear) {
     console.log("drivernear", drivernear);
     let services_type = servicetypes;
-    for (i = 0; i < services_type.length; i++) {
-      let service = services_type[i];
-      services_type[i].duration = 45;
+    for (let service of services_type) {
+      // let service = services_type[i];
+      service.duration = 45;
       const driverIndex = drivernear.findIndex((driver) =>
         driver.services_type.includes(service.id)
       );
 
       if (driverIndex !== -1) {
         const driver = drivernear[driverIndex];
-        services_type[i].duration = await this.calculateTripDuration(
+        service.duration = await this.calculateTripDuration(
           [this.state.origin.longitude, this.state.origin.latitude],
           [driver.coordinates.longitude, driver.coordinates.latitude]
         );
-        // console.log("---", service.duration);
+        console.log("---", service.duration);
       }
       this.setState({ servicetypes: services_type });
     }
