@@ -98,7 +98,7 @@ import PulseCircleLayer from "../common/PulseCircleLayer";
 export default class BookConfirm extends React.PureComponent {
   constructor(props) {
     super(props);
-
+    console.log("drivernearFromBookmain", props.route.params.drivernear);
     this.startPoint = [151.2195, -33.8688];
     this.finishedPoint = [151.2195, -33.8688];
     this.state = {
@@ -112,7 +112,7 @@ export default class BookConfirm extends React.PureComponent {
       destlocatdesc: "",
       latitudeDelta: 0.00176,
       longitudeDelta: 0.00176,
-      origin: {},
+      origin: props.route.params.origin,
       destination: {},
       duration: "",
       distance: "",
@@ -122,7 +122,7 @@ export default class BookConfirm extends React.PureComponent {
       selectedvehicle: {},
       isLoading: true,
       display: false,
-      drivernear: {},
+      drivernear: props.route.params.drivernear,
       vehborder: "#e5e5e5",
       selectedvehiclefare: 0,
       selectedprcperunit: 0,
@@ -568,6 +568,27 @@ export default class BookConfirm extends React.PureComponent {
                 faresmapValue.length > 0 ? (
                   <ScrollView horizontal={true}>
                     {servicetypes.map((item, index) => {
+                      let currentTime = new Date();
+                      let time_away = "Longer wait";
+                      let time = `${
+                        currentTime.getHours() % 12
+                      }:${currentTime.getMinutes()}${
+                        currentTime.getHours() > 12 ? "pm" : "am"
+                      }`;
+                      console.log("--------", item.duration);
+                      if (item.duration < 45) {
+                        console.log("--------");
+                        let futureTime = new Date(
+                          currentTime.getTime() + item.duration * 60000
+                        );
+                        time = `${
+                          futureTime.getHours() % 12
+                        }:${futureTime.getMinutes()}${
+                          futureTime.getHours() > 12 ? "pm" : "am"
+                        }`;
+                        time_away = `${item.duration}min away`;
+                      }
+
                       return (
                         <View
                           style={[
@@ -649,6 +670,32 @@ export default class BookConfirm extends React.PureComponent {
                                 {faresmapValue.length > 0
                                   ? faresmapValue[item.id]
                                   : ""}{" "}
+                              </Text>
+                            </View>
+                            <View
+                              style={{
+                                flex: 1,
+                                height: 40,
+                                justifyContent: "center",
+                                alignContent: "center",
+                              }}
+                            >
+                              <Text
+                                style={[
+                                  this.state.selectedvehicle.id == item.id
+                                    ? {
+                                        color: "#ffffff",
+                                        textAlign: "center",
+                                        fontSize: 12,
+                                      }
+                                    : {
+                                        color: "#000000",
+                                        textAlign: "center",
+                                        fontSize: 12,
+                                      },
+                                ]}
+                              >
+                                {time} • {time_away}
                               </Text>
                             </View>
                             <Text
@@ -854,6 +901,56 @@ export default class BookConfirm extends React.PureComponent {
     return (heading + 360) % 360;
   };
 
+  async calculateTripDuration(start, end) {
+    let locationcordsapi = [];
+    locationcordsapi.push(start);
+    locationcordsapi.push(end);
+    let locationcordsapistr = locationcordsapi.join(";");
+
+    try {
+      const response = await fetch(
+        "https://api.mapbox.com/directions/v5/mapbox/driving/" +
+          locationcordsapistr +
+          "?geometries=geojson&access_token=sk.eyJ1IjoiamttaWxsYSIsImEiOiJjbGlzM3JtMmswczN5M2NxdmR2cDB3bTNuIn0.vBo7vBXjCnpxsyHAwe4jZw",
+        {
+          method: "GET",
+        }
+      );
+
+      const result = await response.json();
+      let duration = result.routes[0].duration;
+      duration = duration / 60;
+      console.log("calculateTripDuration", duration);
+      return duration.toFixed();
+    } catch (e) {
+      return 45;
+    }
+  }
+
+  async updateServicesType(servicetypes, drivernear) {
+    console.log("drivernear", drivernear);
+    let services_type = servicetypes;
+    for (i = 0; i < services_type.length; i++) {
+      let service = services_type[i];
+      services_type[i].duration = 45;
+      const driverIndex = drivernear.findIndex((driver) =>
+        driver.services_type.includes(service.id)
+      );
+
+      if (driverIndex !== -1) {
+        const driver = drivernear[driverIndex];
+        services_type[i].duration = await this.calculateTripDuration(
+          [this.state.origin.longitude, this.state.origin.latitude],
+          [driver.coordinates.longitude, driver.coordinates.latitude]
+        );
+        // console.log("---", service.duration);
+      }
+      this.setState({ servicetypes: services_type });
+    }
+    // console.log("new_services_type", services_type);
+    // this.setState({ servicetypes: services_type });
+  }
+
   async intialLoad() {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
@@ -869,9 +966,10 @@ export default class BookConfirm extends React.PureComponent {
       .then((json) => {
         //console.log("SERVICES TYPE 1");
         //console.log(json.data)
-        this.setState({
-          servicetypes: json.data,
-        });
+        this.updateServicesType(json.data, this.state.drivernear);
+        // this.setState({
+        //   servicetypes: json.data,
+        // });
         AsyncStorage.setItem("servicetypes", JSON.stringify(json.data));
       })
       .catch((error) => {
@@ -1077,9 +1175,10 @@ export default class BookConfirm extends React.PureComponent {
   async errorforservices() {
     await AsyncStorage.getItem("servicetypes").then((value) => {
       if (value != "" && value != null) {
-        this.setState({
-          servicetypes: JSON.parse(value),
-        });
+        this.updateServicesType(JSON.parse(value), this.state.drivernear);
+        // this.setState({
+        //   servicetypes: JSON.parse(value),
+        // });
       }
     });
   }
@@ -1095,30 +1194,28 @@ export default class BookConfirm extends React.PureComponent {
     //.where('isBusy','==','no')
     const accesstoken = await AsyncStorage.getItem("accesstoken");
     // Get query (as Promise)
-    query.get().then((value) => {
-      // All GeoDocument returned by GeoQuery, like the GeoDocument added above
-      // //console.log("IN QUERY");
-      //console.log(value.docs);
-      const drivernear = [];
-      value.docs.map((item, index) => {
-        //console.log("DRIVER MAP");
-        // //console.log(item.data().coordinates);
-        if (item.exists == true) {
-          drivernear.push({
-            ["coordinates"]: item.data().coordinates,
-            ["driverId"]: item.id,
-          });
-          this.setState(
-            {
-              drivernear: drivernear,
-            },
-            () => {
-              //console.log(this.state.drivernear);
-            }
-          );
-        }
-      });
+    let value = await query.get();
+    const drivernear = [];
+    value.docs.map((item, index) => {
+      //console.log("DRIVER MAP");
+      // //console.log(item.data().coordinates);
+      if (item.exists == true) {
+        drivernear.push({
+          ["coordinates"]: item.data().coordinates,
+          ["distance"]: item.distance,
+          ["services_type"]: item.data().services_type,
+          ["driverId"]: item.id,
+          ["driver_name"]: item.data().driver_name,
+        });
+      }
     });
+    await this.updateServicesType(this.state.servicetypes, drivernear);
+    this.setState(
+      {
+        drivernear: drivernear,
+      },
+      () => {}
+    );
   }
 
   getfares() {

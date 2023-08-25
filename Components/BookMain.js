@@ -409,21 +409,23 @@ export default class BookMain extends React.Component {
           if (item.exists == true) {
             drivernear.push({
               ["coordinates"]: item.data().coordinates,
+              ["distance"]: item.distance,
+              ["services_type"]: item.data().services_type,
               ["driverId"]: item.id,
               ["driver_name"]: item.data().driver_name,
             });
             driverList.push(item.id);
             //console.log("DRIVER ABC",drivernear);
-            this.setState(
-              {
-                drivernear: drivernear,
-              },
-              () => {
-                //console.log("DRIVER LIST",this.state.drivernear);
-              }
-            );
           }
         });
+        this.setState(
+          {
+            drivernear: drivernear,
+          },
+          () => {
+            console.log("DRIVER LIST", this.state.drivernear);
+          }
+        );
       } else {
         this.setState({
           drivernear: drivernear,
