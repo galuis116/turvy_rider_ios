@@ -535,7 +535,11 @@ export default class BookMain extends React.Component {
                   riderId: profiledat.id,
                 });
               }
-              const { first_name, last_name, mobile } = profiledat;
+              const { first_name, last_name, mobile, is_active } = profiledat;
+              AsyncStorage.setItem(
+                "status",
+                is_active == 0 ? "blocked" : "active"
+              );
               const rider = {
                 first_name,
                 last_name,

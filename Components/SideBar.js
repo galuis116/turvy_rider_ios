@@ -60,6 +60,7 @@ export default class SideBar extends React.Component {
       riderId: 0,
       accesstoken: "",
       messagecount: 0,
+      blocked: false,
     };
     // alert("IN CONST");
   }
@@ -158,7 +159,11 @@ export default class SideBar extends React.Component {
           );
         }
       });
-
+      AsyncStorage.getItem("status").then((value) => {
+        if (value != "" && value !== null) {
+          this.setState({ blocked: value == "blocked" ? true : false });
+        }
+      });
       AsyncStorage.getItem("messagecount").then((value) => {
         if (value != "" && value !== null) {
           this.setState({
@@ -215,6 +220,7 @@ export default class SideBar extends React.Component {
                 }}
               >
                 <UploadImage
+                  disabled={this.state.blocked}
                   imageuri={this.state.avatar}
                   onReload={(img) => {
                     this.setState({ avatar: img });
@@ -238,7 +244,9 @@ export default class SideBar extends React.Component {
                   {this.state.profiledat.last_name}
                 </Text>
                 <View style={{ paddingLeft: 5 }}>
-                  <TouchableWithoutFeedback
+                  <TouchableOpacity
+                    disabled={this.state.blocked}
+                    style={{ opacity: this.state.blocked ? 0.4 : 1 }}
                     onPress={() =>
                       this.props.navigation.navigate("EditProfile")
                     }
@@ -253,7 +261,7 @@ export default class SideBar extends React.Component {
                     >
                       Edit Profile
                     </Text>
-                  </TouchableWithoutFeedback>
+                  </TouchableOpacity>
                 </View>
               </Col>
             </Row>
@@ -261,11 +269,40 @@ export default class SideBar extends React.Component {
         </View>
         <Divider />
         <View style={{ height: 10 }}></View>
+        {this.state.blocked && (
+          <View
+            style={{
+              padding: 5,
+              marginVertical: 5,
+              marginHorizontal: 30,
+              backgroundColor: "red",
+              borderRadius: 5,
+            }}
+          >
+            <Text
+              style={[
+                styles.ubarFont,
+                {
+                  fontSize: 16,
+                  padding: 3,
+                  color: "white",
+                  textAlign: "center",
+                },
+              ]}
+            >
+              Your account is blocked.
+            </Text>
+          </View>
+        )}
         <FlatList
+          style={{ opacity: this.state.blocked ? 0.4 : 1 }}
           data={routes}
           renderItem={({ item, index }) => {
             return (
-              <TouchableOpacity onPress={() => this.openmenu(item.id)}>
+              <TouchableOpacity
+                disabled={this.state.blocked}
+                onPress={() => this.openmenu(item.id)}
+              >
                 <View style={{ paddingVertical: 7, marginLeft: 30 }}>
                   {this.state.messagecount > 0 && item.Lable == "Messages" ? (
                     <>

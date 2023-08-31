@@ -434,6 +434,34 @@ export default class BookConfirm extends React.PureComponent {
               });
               this.props.navigation.navigate("PaymentMethods", this.state);
             }
+            if (json.status == 0) {
+              this.setState({
+                isLoading: false,
+                vehborder: "red",
+              });
+              if (json.state == "blocked") {
+                AsyncStorage.setItem("status", "blocked");
+              } else {
+                AsyncStorage.setItem("status", "active");
+              }
+              showMessage({
+                message: json.message,
+                type: "danger",
+                color: "#ffffff", // text color
+                hideOnPress: true,
+                animated: true,
+                duration: 5000,
+                icon: "danger",
+                floating: true,
+                statusBarHeight: false,
+                style: {
+                  alignContent: "center",
+                  justifyContent: "center",
+                  marginTop: 20,
+                  alignItems: "center",
+                },
+              });
+            }
           })
           .catch((error) => console.error(error));
       });
