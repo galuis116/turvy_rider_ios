@@ -593,16 +593,18 @@ export default class RideConfirm1 extends React.Component {
       });
 
       const { soundcont } = this.state;
-      let sndObj = JSON.parse(soundcont._lastStatusUpdate);
-      console.log("isPlaying============", sndObj.isPlaying);
-      if (!sndObj.isPlaying) {
-        await soundcont.playAsync();
-        soundcont.setIsLoopingAsync(true);
+      if (soundcont) {
+        let sndObj = JSON.parse(soundcont._lastStatusUpdate);
+        console.log("isPlaying============", sndObj.isPlaying);
+        if (!sndObj.isPlaying) {
+          await soundcont.playAsync();
+          soundcont.setIsLoopingAsync(true);
+        }
+        setTimeout(() => {
+          soundcont.setIsLoopingAsync(false);
+          soundcont.stopAsync();
+        }, 10000);
       }
-      setTimeout(() => {
-        soundcont.setIsLoopingAsync(false);
-        soundcont.stopAsync();
-      }, 10000);
     }
 
     /* const { sound } = await Audio.Sound.createAsync(
@@ -669,13 +671,15 @@ export default class RideConfirm1 extends React.Component {
     this.setState({
       alert15min: true,
     });
-    await soundcont.playAsync();
-    soundcont.setIsLoopingAsync(true);
+    if (soundcont) {
+      await soundcont.playAsync();
+      soundcont.setIsLoopingAsync(true);
 
-    setTimeout(() => {
-      soundcont.setIsLoopingAsync(false);
-      soundcont.stopAsync();
-    }, 10000);
+      setTimeout(() => {
+        soundcont.setIsLoopingAsync(false);
+        soundcont.stopAsync();
+      }, 10000);
+    }
 
     /* const { sound } = await Audio.Sound.createAsync(
 			require('../assets/rider_driver_arriving.mp3'),
@@ -735,14 +739,15 @@ export default class RideConfirm1 extends React.Component {
     this.setState({
       alert5min: true,
     });
+    if (soundcont) {
+      await soundcont.playAsync();
+      soundcont.setIsLoopingAsync(true);
 
-    await soundcont.playAsync();
-    soundcont.setIsLoopingAsync(true);
-
-    setTimeout(() => {
-      soundcont.setIsLoopingAsync(false);
-      soundcont.stopAsync();
-    }, 10000);
+      setTimeout(() => {
+        soundcont.setIsLoopingAsync(false);
+        soundcont.stopAsync();
+      }, 10000);
+    }
 
     /* const { sound } = await Audio.Sound.createAsync(
 			require('../assets/rider_driver_arriving.mp3'),
@@ -978,8 +983,10 @@ export default class RideConfirm1 extends React.Component {
     //console.log('sound object===============', this.state.soundcont)
 
     //this.stopRunSound()
-    this.state.soundcont.setIsLoopingAsync(false);
-    this.state.soundcont.stopAsync();
+    if (this.state.soundcont) {
+      this.state.soundcont.setIsLoopingAsync(false);
+      this.state.soundcont.stopAsync();
+    }
 
     this.setState({
       congdone: true,
@@ -999,14 +1006,15 @@ export default class RideConfirm1 extends React.Component {
     });
 
     const { soundcont } = this.state;
+    if (soundcont) {
+      await soundcont.playAsync();
+      soundcont.setIsLoopingAsync(true);
 
-    await soundcont.playAsync();
-    soundcont.setIsLoopingAsync(true);
-
-    setTimeout(() => {
-      soundcont.setIsLoopingAsync(false);
-      soundcont.stopAsync();
-    }, 10000);
+      setTimeout(() => {
+        soundcont.setIsLoopingAsync(false);
+        soundcont.stopAsync();
+      }, 10000);
+    }
 
     /* const { sound } = await Audio.Sound.createAsync(
 			require('../assets/rider_driver_arriving.mp3'),
