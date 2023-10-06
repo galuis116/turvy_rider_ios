@@ -854,21 +854,28 @@ export default class RiderRating extends React.Component {
             ) : (
               <></>
             )}
-
-            <Col>
-              <View
-                style={{ paddingBottom: 20, borderRadius: 40, paddingTop: 20 }}
-              >
-                <TouchableOpacity
-                  style={styles.contentBtn}
-                  onPress={() => {
-                    this.submit();
+            <Row>
+              <Col size={4}></Col>
+              <Col size={4}>
+                <View
+                  style={{
+                    paddingBottom: 20,
+                    borderRadius: 40,
+                    paddingTop: 20,
                   }}
                 >
-                  <GradientButton title="Submit" />
-                </TouchableOpacity>
-              </View>
-            </Col>
+                  <TouchableOpacity
+                    style={styles.contentBtn}
+                    onPress={() => {
+                      this.submit();
+                    }}
+                  >
+                    <GradientButton title="Submit" />
+                  </TouchableOpacity>
+                </View>
+              </Col>
+              <Col size={4}></Col>
+            </Row>
           </Grid>
         )}
       </View>

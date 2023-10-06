@@ -244,6 +244,7 @@ export default class RideConfirm1 extends React.Component {
     //
     //
     channel.bind("tap_to_depart_event", (data) => {
+      console.log("tap_to_depart_trip");
       this.getrideStart();
       //console.log("TAP TO DAPART",JSON.stringify(data));
       // alert(JSON.stringify(data));

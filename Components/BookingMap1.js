@@ -756,7 +756,7 @@ export default class BookingMap extends React.Component {
               );
             }}
           >
-            <Row style={{ height: 20, padding: 6, paddingBottom: 20 }}>
+            <Row style={{ height: 40, padding: 6, paddingBottom: 20 }}>
               <Col size={2}></Col>
               <Col
                 size={8}
@@ -764,7 +764,9 @@ export default class BookingMap extends React.Component {
               >
                 <Divider />
 
-                <Text style={{ color: "#51E84f", fontWeight: "bold" }}>
+                <Text
+                  style={{ color: "#51E84f", fontWeight: "bold", fontSize: 14 }}
+                >
                   Enroute to Destination{" "}
                 </Text>
               </Col>

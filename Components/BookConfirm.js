@@ -155,6 +155,7 @@ export default class BookConfirm extends React.PureComponent {
       active: 1,
       MapboxStyleURL: MapboxCustomURL,
       tripDistance: 0,
+      tripDuration: 0,
       faresmapValue: [],
       routecorrdinates: [
         this.startPoint, //point A "current" ~ From
@@ -528,15 +529,15 @@ export default class BookConfirm extends React.PureComponent {
             surchnages =
               parseFloat(fuel_surc) +
               parseFloat(result.data.nsw_gtl_charge) +
-              parseFloat(nsw_ctp) +
-              parseFloat(result.data.baby_seat_charge);
+              parseFloat(nsw_ctp); // +
+            //parseFloat(result.data.baby_seat_charge);
           } else if (item.id == 7) {
             //surchnages = (parseFloat(result.data.fuel_surge_charge)*parseFloat(this.state.distance))+parseFloat(result.data.nsw_gtl_charge)+parseFloat(result.data.nsw_ctp_charge)+parseFloat(minimumfare*(parseFloat(gstper)/100))+parseFloat(result.data.baby_seat_charge);
             surchnages =
               parseFloat(fuel_surc) +
               parseFloat(result.data.nsw_gtl_charge) +
-              parseFloat(nsw_ctp) +
-              parseFloat(result.data.pet_charge);
+              parseFloat(nsw_ctp); // +
+            //parseFloat(result.data.pet_charge);
           } else {
             surchnages =
               parseFloat(fuel_surc) +
@@ -596,20 +597,27 @@ export default class BookConfirm extends React.PureComponent {
                 faresmapValue.length > 0 ? (
                   <ScrollView horizontal={true}>
                     {servicetypes.map((item, index) => {
+                      let price =
+                        parseFloat(faresmap[item.id]) +
+                        parseFloat(surchnageslist[item.id]);
+                      price = price.toFixed(2);
                       let currentTime = new Date();
-                      let time_away = "Longer wait";
-                      let time = `${
-                        currentTime.getHours() > 12
-                          ? currentTime.getHours() % 12
-                          : currentTime.getHours()
-                      }:${currentTime.getMinutes()}${
-                        currentTime.getHours() > 12 ? "pm" : "am"
-                      }`;
-                      console.log("--------", item.duration);
+                      let time_away = "";
+                      // let time = `${
+                      //   currentTime.getHours() > 12
+                      //     ? currentTime.getHours() % 12
+                      //     : currentTime.getHours()
+                      // }:${currentTime.getMinutes()}${
+                      //   currentTime.getHours() > 12 ? "pm" : "am"
+                      // }`;
+                      let time = "No available driver";
+                      console.log("--------", this.state.tripDuration);
                       if (item.duration < 45) {
                         console.log("--------");
                         let futureTime = new Date(
-                          currentTime.getTime() + item.duration * 60000
+                          currentTime.getTime() +
+                            item.duration * 60000 +
+                            this.state.tripDuration * 60000
                         );
                         time = `${
                           futureTime.getHours() > 12
@@ -618,7 +626,7 @@ export default class BookConfirm extends React.PureComponent {
                         }:${futureTime.getMinutes()}${
                           futureTime.getHours() > 12 ? "pm" : "am"
                         }`;
-                        time_away = `${item.duration}min away`;
+                        time_away = ` • ${item.duration}min away`;
                       }
 
                       return (
@@ -699,10 +707,7 @@ export default class BookConfirm extends React.PureComponent {
                                 ]}
                               >
                                 {" "}
-                                A${" "}
-                                {faresmapValue.length > 0
-                                  ? faresmapValue[item.id]
-                                  : ""}{" "}
+                                A$ {faresmapValue.length > 0 ? price : ""}{" "}
                               </Text>
                             </View>
                             <View
@@ -728,7 +733,8 @@ export default class BookConfirm extends React.PureComponent {
                                       },
                                 ]}
                               >
-                                {time} • {time_away}
+                                {time}
+                                {time_away}
                               </Text>
                             </View>
                             <Text
@@ -1113,11 +1119,13 @@ export default class BookConfirm extends React.PureComponent {
       .then((result) => {
         let distance = result.routes[0].distance;
         distance = distance / 1000;
+        let duration = result.routes[0].duration / 60;
 
         //console.log("distance==========",distance);
 
         this.setState({
           tripDistance: distance,
+          tripDuration: duration.toFixed(),
         });
       });
 
@@ -1271,18 +1279,21 @@ export default class BookConfirm extends React.PureComponent {
               if (Object.keys(this.state.fares).length) {
                 //console.log("FARES LIST NEw", this.state.fares);
                 let distance = this.state.tripDistance;
+                // let distance = 20;
                 this.state.fares.map((item, key) => {
                   //console.log("fare data");
                   //console.log(item);
                   let fareoff = 0;
-                  if (distance > item.base_ride_distance) {
+                  fareoff = parseFloat(distance * item.price_per_unit);
+                  if (fareoff < item.minimum_fare) {
                     //let remindist = distance - item.base_ride_distance
                     //fareoff = parseFloat(item.base_ride_distance_charge)+parseFloat(remindist*item.price_per_unit);
-                    fareoff = parseFloat(distance * item.price_per_unit);
-                  } else {
-                    //fareoff = parseFloat(distance*item.price_per_unit);
-                    fareoff = parseFloat(item.base_ride_distance);
+                    fareoff = parseFloat(item.minimum_fare);
                   }
+                  //  else {
+                  //   //fareoff = parseFloat(distance*item.price_per_unit);
+                  //   fareoff = parseFloat(item.base_ride_distance_charge);
+                  // }
 
                   fareItems[item.servicetype_id] = item;
 
@@ -1313,21 +1324,21 @@ export default class BookConfirm extends React.PureComponent {
                       parseFloat(fuel_surc) +
                       parseFloat(item.nsw_gtl_charge) +
                       parseFloat(nsw_ctp) +
-                      parseFloat(item.baby_seat_charge) +
-                      parseFloat(minimumfaren * (parseFloat(gstper) / 100));
+                      parseFloat(item.baby_seat_charge); //+
+                    //parseFloat(minimumfaren * (parseFloat(gstper) / 100));
                   } else if (item.servicetype_id == 7) {
                     surchnageslist[item.servicetype_id] =
                       parseFloat(fuel_surc) +
                       parseFloat(item.nsw_gtl_charge) +
                       parseFloat(nsw_ctp) +
-                      parseFloat(item.pet_charge) +
-                      parseFloat(minimumfaren * (parseFloat(gstper) / 100));
+                      parseFloat(item.pet_charge); // +
+                    //parseFloat(minimumfaren * (parseFloat(gstper) / 100));
                   } else {
                     surchnageslist[item.servicetype_id] =
                       parseFloat(fuel_surc) +
                       parseFloat(item.nsw_gtl_charge) +
-                      parseFloat(nsw_ctp) +
-                      parseFloat(minimumfaren * (parseFloat(gstper) / 100));
+                      parseFloat(nsw_ctp); // +
+                    //parseFloat(minimumfaren * (parseFloat(gstper) / 100));
                   }
                 });
                 this.setState({
@@ -1967,7 +1978,7 @@ export default class BookConfirm extends React.PureComponent {
                       </Col>
                       <Col size={25}>
                         <Text style={styles.label}>
-                          A${this.state.minimumfare}
+                          A${this.state.longpressdata.minimum_fare}
                         </Text>
                       </Col>
                     </Row>
@@ -2029,7 +2040,7 @@ export default class BookConfirm extends React.PureComponent {
                         </Text>
                       </Col>
                     </Row>
-                    <Row size={6}>
+                    {/* <Row size={6}>
                       <Col size={75}>
                         <Text style={styles.label}>GST</Text>
                       </Col>
@@ -2038,7 +2049,7 @@ export default class BookConfirm extends React.PureComponent {
                           A${this.state.gstcalcultated}{" "}
                         </Text>
                       </Col>
-                    </Row>
+                    </Row> */}
                     {this.getseatcost()}
                     <Row size={20}>
                       <Col size={12}>
