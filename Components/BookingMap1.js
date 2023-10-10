@@ -140,7 +140,7 @@ export default class BookingMap extends React.Component {
       disttravlled: 0,
       distancetravel: 0,
       routemap: null,
-      snaptoval: ["26%", "40%", "10%"],
+      snaptoval: ["25%", "40%", "15%"],
       snapIndex: 0,
       locationcordsapistr: null,
       modalvisible: false,
@@ -731,7 +731,7 @@ export default class BookingMap extends React.Component {
           backgroundColor: "white",
           padding: 16,
           height: "100%",
-          margin: 10,
+          // margin: 10,
           shadowColor: "#000",
           shadowOffset: {
             width: 0,
@@ -756,7 +756,14 @@ export default class BookingMap extends React.Component {
               );
             }}
           >
-            <Row style={{ height: 40, padding: 6, paddingBottom: 20 }}>
+            <Row
+              style={{
+                height: 60,
+                marginVertical: 10,
+                padding: 6,
+                paddingBottom: 20,
+              }}
+            >
               <Col size={2}></Col>
               <Col
                 size={8}
@@ -765,16 +772,16 @@ export default class BookingMap extends React.Component {
                 <Divider />
 
                 <Text
-                  style={{ color: "#51E84f", fontWeight: "bold", fontSize: 14 }}
+                  style={{ color: "#51E84f", fontWeight: "bold", fontSize: 20 }}
                 >
                   Enroute to Destination{" "}
                 </Text>
               </Col>
               <Col size={2}>
                 {this.state.snapIndex == 2 ? (
-                  <Entypo name="arrow-up" size={15} color="#51E84f" />
+                  <Entypo name="arrow-up" size={20} color="#51E84f" />
                 ) : (
-                  <Entypo name="arrow-down" size={15} color="#51E84f" />
+                  <Entypo name="arrow-down" size={20} color="#51E84f" />
                 )}
               </Col>
             </Row>
@@ -784,7 +791,7 @@ export default class BookingMap extends React.Component {
               <Divider inset={true} insetType="middle" />
             </Col>
           </Row>
-          <Row style={{ height: 80 }}>
+          <Row style={{ height: 75, marginBottom: 15 }}>
             <Col size={4} style={{ padding: 6 }}>
               <View
                 style={{
