@@ -1324,21 +1324,21 @@ export default class BookConfirm extends React.PureComponent {
                       parseFloat(fuel_surc) +
                       parseFloat(item.nsw_gtl_charge) +
                       parseFloat(nsw_ctp) +
-                      parseFloat(item.baby_seat_charge); //+
-                    //parseFloat(minimumfaren * (parseFloat(gstper) / 100));
+                      parseFloat(item.baby_seat_charge) +
+                      parseFloat(minimumfaren * (parseFloat(gstper) / 100));
                   } else if (item.servicetype_id == 7) {
                     surchnageslist[item.servicetype_id] =
                       parseFloat(fuel_surc) +
                       parseFloat(item.nsw_gtl_charge) +
                       parseFloat(nsw_ctp) +
-                      parseFloat(item.pet_charge); // +
-                    //parseFloat(minimumfaren * (parseFloat(gstper) / 100));
+                      parseFloat(item.pet_charge) +
+                      parseFloat(minimumfaren * (parseFloat(gstper) / 100));
                   } else {
                     surchnageslist[item.servicetype_id] =
                       parseFloat(fuel_surc) +
                       parseFloat(item.nsw_gtl_charge) +
-                      parseFloat(nsw_ctp); // +
-                    //parseFloat(minimumfaren * (parseFloat(gstper) / 100));
+                      parseFloat(nsw_ctp) +
+                      parseFloat(minimumfaren * (parseFloat(gstper) / 100));
                   }
                 });
                 this.setState({

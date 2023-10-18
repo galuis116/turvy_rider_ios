@@ -94,8 +94,14 @@ distance.units('imperial');
 export default class RideConfirm1 extends React.Component {
   constructor(props) {
     super(props);
-    this.startPoint = [151.2195, -33.8688];
-    this.finishedPoint = [151.2195, -33.8688];
+    this.startPoint = [
+      props.route.params.longitudecur,
+      props.route.params.latitudecur,
+    ];
+    this.finishedPoint = [
+      props.route.params.longitudecur,
+      props.route.params.latitudecur,
+    ];
     this.state = {
       tuneBookingCancelByDriver: false,
       tuneTripStart: false,
@@ -103,15 +109,15 @@ export default class RideConfirm1 extends React.Component {
       step: 1,
       locationcur: {},
       sourceLocation: {},
-      latitudecur: -33.8688,
-      longitudecur: 151.2195,
-      latitudedest: "",
-      longitudedest: "",
+      latitudecur: props.route.params.latitudecur,
+      longitudecur: props.route.params.longitudecur,
+      latitudedest: props.route.params.latitudedest,
+      longitudedest: props.route.params.longitudedest,
       destlocatdesc: "",
       latitudeDelta: 0.007683038072176629,
       longitudeDelta: 0.004163794219493866,
-      origin: {},
-      destination: {},
+      origin: props.route.params.origin,
+      destination: props.route.params.destination,
       duration: "",
       durationdisplay: "",
       servicetypes: [],
@@ -123,11 +129,11 @@ export default class RideConfirm1 extends React.Component {
       sendMessage: false,
       inmessagevisible: false,
       distance: "",
-      bookingdriver: {},
+      bookingdriver: props.route.params.bookingdriver,
       driverLocation: {},
       distanceTravelled: "",
       drivertoloccord: {},
-      bookingresponse: {},
+      bookingresponse: props.route.params.bookingresponse,
       rideinfoinprocess: {},
       snaptoval: ["57%", "40%"],
       snapIndex: 0,
@@ -544,7 +550,8 @@ export default class RideConfirm1 extends React.Component {
             this.refs.fmcancelInst.showMessage({
               message: "Trip Request had been cancelled by Driver!",
               type: "warning",
-              autoHide: false,
+              // autoHide: false,
+              duration: 5000,
               style: {
                 margin: 20,
                 borderRadius: 10,
@@ -560,9 +567,9 @@ export default class RideConfirm1 extends React.Component {
             clearInterval(this.settime);
             setTimeout(
               function () {
-                if (this.refs.fmcancelInst) {
-                  this.refs.fmcancelInst.hideMessage();
-                }
+                // if (this.refs.fmcancelInst) {
+                //   this.refs.fmcancelInst.hideMessage();
+                // }
                 if (this.state.soundcont) {
                   //alert("SOUND STOP");
                   this.state.soundcont.setIsLoopingAsync(false);
@@ -1420,13 +1427,13 @@ export default class RideConfirm1 extends React.Component {
       this.setState(
         {
           selectedvehicle: this.props.route.params.selectedvehicle,
-          origin: this.props.route.params.origin,
-          destination: this.props.route.params.destination,
-          latitudedest: this.props.route.params.latitudedest,
-          longitudedest: this.props.route.params.longitudedest,
-          latitudecur: this.props.route.params.latitudecur,
-          longitudecur: this.props.route.params.longitudecur,
-          bookingresponse: this.props.route.params.bookingresponse,
+          // origin: this.props.route.params.origin,
+          // destination: this.props.route.params.destination,
+          // latitudedest: this.props.route.params.latitudedest,
+          // longitudedest: this.props.route.params.longitudedest,
+          // latitudecur: this.props.route.params.latitudecur,
+          // longitudecur: this.props.route.params.longitudecur,
+          // bookingresponse: this.props.route.params.bookingresponse,
           rideinfoinprocess: this.props.route.params.rideinfoinprocess,
           bookingdriver: this.props.route.params.bookingdriver,
           waypointslnglat: this.props.route.params.waypointslnglat,
@@ -1455,14 +1462,14 @@ export default class RideConfirm1 extends React.Component {
       this.getVehcileDetails(this.props.route.params.bookingdriver.id);
       this.setState(
         {
-          origin: this.props.route.params.origin,
-          destination: this.props.route.params.destination,
-          latitudedest: this.props.route.params.latitudedest,
-          longitudedest: this.props.route.params.longitudedest,
-          latitudecur: this.props.route.params.latitudecur,
-          longitudecur: this.props.route.params.longitudecur,
-          bookingdriver: this.props.route.params.bookingdriver,
-          bookingresponse: this.props.route.params.bookingresponse,
+          // origin: this.props.route.params.origin,
+          // destination: this.props.route.params.destination,
+          // latitudedest: this.props.route.params.latitudedest,
+          // longitudedest: this.props.route.params.longitudedest,
+          // latitudecur: this.props.route.params.latitudecur,
+          // longitudecur: this.props.route.params.longitudecur,
+          // bookingdriver: this.props.route.params.bookingdriver,
+          // bookingresponse: this.props.route.params.bookingresponse,
           waypointslnglat: this.props.route.params.waypointslnglat,
           drivername: driver_name,
           locationcordsapistr: locationcordsapistr,
@@ -1726,10 +1733,13 @@ export default class RideConfirm1 extends React.Component {
     let number = "";
     // alert("CALL click	");
     //console.log("Click Call Data",this.state);
+    // this.props.navigation.replace("BookingMap1", this.state);
+
     fetch("https://www.turvy.net/api/rider/twiliomakecallrider", {
       method: "POST",
       headers: new Headers({
         "Content-Type": "application/json",
+        Accept: "application/json",
       }),
       body: JSON.stringify({
         driver_id: this.state.bookingdriver.id,
@@ -1744,7 +1754,7 @@ export default class RideConfirm1 extends React.Component {
     })
       .then((response) => response.json())
       .then((json) => {
-        //console.log("RESPONSE CALL 1",json);
+        console.log("RESPONSE CALL 1", json);
         if (json.status == 1) {
           //alert("IN SUCCESS"+json.senderphn);
           if (Platform.OS === "ios") {
@@ -1767,18 +1777,18 @@ export default class RideConfirm1 extends React.Component {
 
           setTimeout(() => {
             this.refs.fmcallerror.hideMessage();
-          }, 2000);
+          }, 5000);
         }
 
         /*if(json.status == 1){
-				      		 this.setState({                                        
-					         	isLoading:false,
-				    				vehborder:'red',
-				    				bookingresponse:json.data
-					         });
-				      		this.props.navigation.navigate('PromoCode',this.state)
-				      	}
-				      	*/
+    		      		 this.setState({
+    			         	isLoading:false,
+    		    				vehborder:'red',
+    		    				bookingresponse:json.data
+    			         });
+    		      		this.props.navigation.navigate('PromoCode',this.state)
+    		      	}
+    		      	*/
       })
       .catch((error) => {
         console.error(" CALL ERROR BLOCK", error);
@@ -2288,7 +2298,7 @@ export default class RideConfirm1 extends React.Component {
         />
         <FlashMessage
           ref="fmcallerror"
-          position={{ top: 50 }}
+          position={{ top: 150 }}
           style={{ borderRadius: 2 }}
         />
         <FlashMessage
